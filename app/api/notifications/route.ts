@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
   let siteUrl = request.url;
   try {
-    siteUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL || request.url).origin;
+    siteUrl = new URL(process.env.SITE_URL || request.url).origin;
   } catch {
     siteUrl = new URL(request.url).origin;
   }

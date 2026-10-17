@@ -58,6 +58,21 @@ RESEND_FROM_EMAIL=Talk To Us <ideas@example.com>
 
 If they are absent, idea submission and discussion still work; email delivery stays disabled. The endpoint records delivery attempts and uses an idempotency key to avoid duplicate messages.
 
+## Deploy to Cloudflare Workers
+
+Supabase provides the database, authentication, and private file storage. The Next.js app and its notification route run on Cloudflare Workers because Supabase does not host a Next.js server.
+
+1. Configure `.env.local` with the production Supabase URL and publishable key before building. These public values are bundled into the browser app; never add a Supabase service-role key.
+2. Sign in to Cloudflare with `npx wrangler login` and verify the account with `npx wrangler whoami`.
+3. Preview the Worker runtime locally with `npm run preview:worker`.
+4. Deploy with `npm run deploy:worker`. This creates or updates the `talk-to-us` Worker using the free Workers tier by default.
+5. In Supabase **Authentication → URL Configuration**, set the Site URL to the deployed Worker URL and add that origin plus `/**` to the redirect URL allowlist.
+6. Sign up the first administrator, confirm the account, and promote it using the SQL in **Connect Supabase** above.
+
+Email delivery remains off until `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are configured in Cloudflare Worker environment settings. Supabase's default SMTP is limited to project team addresses, so configure a custom SMTP provider for confirmations to the wider staff group. The app uses the request origin for notification links; set the optional server-only `SITE_URL` variable if you later add a custom domain.
+
+The deployment uses the OpenNext Cloudflare adapter with the existing Next.js App Router, including its server-side notification endpoint. Cloudflare Worker runtime environment settings live in the Cloudflare dashboard or secret store; `.env.local` remains local and ignored by Git.
+
 ## What is included
 
 - Email and password sign-in with confirmed accounts.
@@ -82,4 +97,4 @@ npm run lint
 npm run build
 ```
 
-The SQL migration should be applied to a Supabase project before using the live backend. Deployment is intentionally out of scope for this project setup.
+The SQL migration must be applied to a Supabase project before using the live backend.
