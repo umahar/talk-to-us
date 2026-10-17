@@ -1,35 +1,54 @@
 # Talk To Us
 
-A private portal where authorized users can submit ideas and administrators can review, discuss, assign, and track them through to an outcome.
+A private portal where authenticated users can submit ideas and browse other submissions. Administrators can review, discuss, assign, and track ideas through to an outcome.
 
-## Initial product brief
+## Product decisions
 
-- Users submit an idea or issue with a description and optional files.
-- Administrators review submissions, update their status, and assign work.
-- The history records who submitted each idea, when it was submitted, status changes, discussion, and the final outcome.
-- Users and administrators can discuss an idea in its history.
-- Access is restricted to approved users, with administrator permissions for managing submissions and access.
+- Anyone with a verified account can submit ideas. Use simple email and password sign-in with email verification; no enterprise SSO is required.
+- All authenticated users can browse ideas. Show the submitter's name, idea details, status, and public timeline.
+- Keep discussion private to the submitter and administrators. Administrators can see and respond to every idea.
+- Use three access levels: user, admin, and super admin. Admins manage ideas and their workflow. Super admins also manage user roles and application settings.
+- Send email notifications to submitters for admin replies and meaningful status changes. Notify admins when an idea is submitted or the submitter replies. General viewers do not receive notifications.
+- No external app integrations are planned for the first release.
+
+## Suggested idea workflow
+
+1. Submitted
+2. Under consideration
+3. In review
+4. Budget review, when the idea requires funding
+5. Approved / budgeted
+6. Assigned
+7. In progress
+8. Resolved
+9. Closed
+
+Declined, deferred, and duplicate are alternate outcomes that admins can select from an active stage. Ideas that need no budget can skip Budget review. Preserve every status change, its author, timestamp, and an optional decision note.
+
+For useful finance reporting, allow optional estimated cost, currency, budget period, approved amount, and actual spend fields. Budget figures should remain optional so non-financial ideas can use the same workflow.
 
 ## Recommended starting stack
 
 - **Next.js App Router and TypeScript** for the user portal, administrator dashboard, forms, and server-side operations in one application.
-- **Supabase Postgres** for users, ideas, assignments, comments, status history, and audit records. Keep status changes and outcomes as timestamped history so the current status does not erase prior decisions.
-- **Supabase Auth** for sign-in, configured for the client's approved users. Use the client's existing identity provider for single sign-on if one is available; otherwise use an invitation-only sign-in flow.
-- **Supabase Storage** with private access policies for uploaded files. Store attachment metadata alongside the idea and grant access only to users allowed to view that idea.
-- **Tailwind CSS and shadcn/ui** for a consistent, accessible interface. Start with a filterable table or status board for administration; add charts only when useful reporting questions are known.
-- **Server-side authorization and database Row Level Security** for access checks. A user's role and allowed ideas must be checked on every protected operation.
+- **Supabase Postgres** for users, ideas, assignments, comments, status history, and audit records.
+- **Supabase Auth** for email and password sign-in with verified email addresses. User self-registration is enabled; super admins assign admin roles.
+- **Supabase Storage** with private access policies for uploaded files. Suggested initial limit: up to five files per idea, 10 MB each, allowing PDF, DOCX, XLSX, CSV, PNG, and JPEG. Files are visible only to the submitter and admins.
+- **Tailwind CSS and shadcn/ui** for a consistent, accessible interface. Start with a filterable admin table and status board; add charts for reporting.
+- **Server-side authorization and database Row Level Security** for access checks. Check a user's role and idea access on every protected operation.
 
-No additional third-party API is required for the core submission and review flow beyond the chosen auth, database, and file-storage services. Email alerts, live updates, or links to a ticketing system can be added if the client wants them.
+No additional third-party API is required for the first release beyond the chosen authentication, database, and file-storage services. Email delivery can use the provider selected during implementation.
 
-## Decisions to confirm before implementation
+## Reporting
 
-1. **Who can use the portal?** Employees in one organization, invited external users, or another group? Is there an existing Microsoft Entra ID, Google Workspace, or other identity provider?
-2. **What can users see?** Should each submitter see only their own ideas, or can users browse and comment on other submissions? Which admin roles are needed?
-3. **What is the workflow?** Confirm the status list, who can change each status, whether statuses need to be configurable, and how completed, declined, or duplicate ideas are handled.
-4. **How should discussion work?** Should comments be visible only to the submitter and admins, or to everyone who can see the idea? Should the app send email alerts for replies and status changes?
-5. **What files are allowed?** Confirm file types, size limits, and whether submissions may contain sensitive or regulated information.
-6. **What integrations are expected?** For example, Microsoft Teams, Slack, Jira, ServiceNow, or an existing email system. Is an API needed to export or sync ideas?
-7. **What reporting is useful?** For example, categories, departments, priorities, aging, budget, duplicate detection, or voting.
+The first dashboard should cover:
+
+- Idea counts by status, category, and month.
+- Ideas awaiting review and their age.
+- Average time to first review and resolution.
+- Budget requested, budget approved, and actual spend by budget period.
+- Filters for date range, category, status, submitter, and assignee.
+
+Categories and budget periods should be manageable by super admins. Use one configured default currency and save the currency alongside each amount so reports do not add unlike currencies together.
 
 ## Later deployment choice
 
