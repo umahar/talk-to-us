@@ -153,7 +153,7 @@ export function IdeaForm() {
             )}
 
             <div className="field" style={{ marginTop: 14 }}>
-              <span className="field-label">Add an attachment <span style={{ color: "#9aa49b", fontWeight: 500 }}>(optional)</span></span>
+              <span className="field-label">Add an attachment <span style={{ color: "#a49aa3", fontWeight: 500 }}>(optional)</span></span>
               <input
                 ref={fileInput}
                 className="sr-only"

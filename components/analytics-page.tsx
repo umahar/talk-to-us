@@ -155,7 +155,7 @@ export function AnalyticsPage() {
 
       <div className="analytics-grid" style={{ marginTop: 14 }}>
         <section className="panel chart-card">
-          <div className="chart-head"><div><h2>Budget overview</h2><p>Requested, approved and spent · grouped by period and currency</p></div><span className="chart-legend"><span className="legend-dot" style={{ background: "#a6bc84" }} /> Finance</span></div>
+          <div className="chart-head"><div><h2>Budget overview</h2><p>Requested, approved and spent · grouped by period and currency</p></div><span className="chart-legend"><span className="legend-dot" style={{ background: "#bc84a1" }} /> Finance</span></div>
           {financeByPeriod.length ? (
             <div className="table-scroll"><table className="finance-table">
               <thead><tr><th>Budget period</th><th>Requested</th><th>Approved</th><th>Actual spend</th></tr></thead>
@@ -169,7 +169,7 @@ export function AnalyticsPage() {
 
         <div className="side-column">
           <section className="panel">
-            <PanelHeading title="Status distribution" subtitle="A snapshot of every idea" action={<CalendarRange size={13} color="#809571" />} />
+            <PanelHeading title="Status distribution" subtitle="A snapshot of every idea" action={<CalendarRange size={13} color="#957188" />} />
             <div className="status-summary">
               {["submitted", "under_consideration", "in_review", "budget_review", "approved", "assigned", "in_progress", "resolved", "declined", "deferred"].map((status) => {
                 const count = counts[status as keyof typeof counts];

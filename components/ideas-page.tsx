@@ -108,7 +108,7 @@ export function IdeasPage({ mine = false }: { mine?: boolean }) {
           )}
         </div>
         {demo && <div className="panel-divider" />}
-        {demo && <div style={{ display: "flex", justifyContent: "center", padding: 11, color: "#9aa49b", fontSize: 8 }}>Demo board · changes stay in this browser</div>}
+        {demo && <div style={{ display: "flex", justifyContent: "center", padding: 11, color: "#a49aa3", fontSize: 8 }}>Demo board · changes stay in this browser</div>}
       </section>
     </>
   );

@@ -208,7 +208,7 @@ export function Dashboard() {
         </div>
       </div>
       {isAdmin(user?.role) && (
-        <div style={{ marginTop: 13, color: "#98a29a", fontSize: 9, display: "flex", alignItems: "center", gap: 5 }}>
+        <div style={{ marginTop: 13, color: "#a298a2", fontSize: 9, display: "flex", alignItems: "center", gap: 5 }}>
           <CalendarDays size={11} /> {counts.submitted} {counts.submitted === 1 ? "idea needs" : "ideas need"} first review · <Link className="text-link" href="/admin">Review queue <ArrowRight size={11} /></Link>
         </div>
       )}

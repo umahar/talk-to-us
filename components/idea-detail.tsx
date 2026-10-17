@@ -173,7 +173,7 @@ export function IdeaDetail({ ideaId }: { ideaId: string }) {
       <div className="detail-layout">
         <div className="detail-main">
           <section className="panel detail-card">
-            <div className="detail-category"><span className="category-color" style={{ background: category?.color ?? "#93b77b" }} />{category?.name ?? "Uncategorised"}</div>
+            <div className="detail-category"><span className="category-color" style={{ background: category?.color ?? "#b77ba1" }} />{category?.name ?? "Uncategorised"}</div>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 14 }}>
               <h2 className="detail-title">{idea.title}</h2>
               <StatusBadge status={idea.status} />
@@ -320,7 +320,7 @@ export function IdeaDetail({ ideaId }: { ideaId: string }) {
             </>
           ) : (
             <section className="panel detail-side-card">
-              <div className="detail-side-head"><h3>Have a thought?</h3><MessageCircleMore size={14} color="#7e9669" /></div>
+              <div className="detail-side-head"><h3>Have a thought?</h3><MessageCircleMore size={14} color="#966984" /></div>
               <p className="field-hint">If you shared this idea, you can reply privately to the review team in the history above.</p>
               {!isAuthor && <Link className="text-link" href="/ideas">Find another idea <ArrowUpRight size={12} /></Link>}
             </section>

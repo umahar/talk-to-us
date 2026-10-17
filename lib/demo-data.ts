@@ -25,10 +25,10 @@ export const DEMO_PROFILES: Profile[] = [
 ];
 
 export const DEMO_CATEGORIES: Category[] = [
-  { id: "category-workplace", name: "Workplace", color: "#8ec7a4", is_active: true },
+  { id: "category-workplace", name: "Workplace", color: "#c08ec7", is_active: true },
   { id: "category-culture", name: "Culture & community", color: "#f4bd8b", is_active: true },
-  { id: "category-tools", name: "Tools & technology", color: "#9db7ef", is_active: true },
-  { id: "category-sustainability", name: "Sustainability", color: "#a7c979", is_active: true },
+  { id: "category-tools", name: "Tools & technology", color: "#d79eee", is_active: true },
+  { id: "category-sustainability", name: "Sustainability", color: "#c979a3", is_active: true },
   { id: "category-process", name: "Ways of working", color: "#d5a4cb", is_active: true },
 ];
 

@@ -668,7 +668,7 @@ export function PortalProvider({ children }: { children: ReactNode }) {
         categories: [...workspace.categories, {
           id: createLocalId("category"),
           name: cleanName,
-          color: "#bed386",
+          color: "#d386a8",
           is_active: true,
           created_at: new Date().toISOString(),
         }],

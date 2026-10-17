@@ -125,8 +125,8 @@ export function PortalFrame({ children }: { children: ReactNode }) {
             <div className="user-chip">
               <Avatar profile={user} />
               <span className="profile-copy">
-                <strong style={{ color: "#43574a", fontSize: 10 }}>{user.display_name}</strong>
-                <span style={{ color: "#94a098", fontSize: 8 }}>{user.role === "user" ? "Member" : user.role === "admin" ? "Admin" : "Super admin"}</span>
+                <strong style={{ color: "#554357", fontSize: 10 }}>{user.display_name}</strong>
+                <span style={{ color: "#9f94a0", fontSize: 8 }}>{user.role === "user" ? "Member" : user.role === "admin" ? "Admin" : "Super admin"}</span>
               </span>
             </div>
           </div>

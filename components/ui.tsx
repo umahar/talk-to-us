@@ -3,7 +3,6 @@ import {
   Bell,
   Check,
   CircleAlert,
-  Lightbulb,
   LoaderCircle,
   LockKeyhole,
   Sparkles,
@@ -14,9 +13,7 @@ import { getInitials, STATUS_META } from "@/lib/domain";
 export function BrandLockup({ light = false }: { light?: boolean }) {
   return (
     <div className={`brand-lockup${light ? " brand-light" : ""}`}>
-      <span className="brand-mark" aria-hidden="true">
-        <Lightbulb size={19} strokeWidth={2.2} />
-      </span>
+      <span className="brand-mark" aria-hidden="true" />
       <span className="brand-copy">
         <span className="brand-name">talk to us</span>
         <span className="brand-tagline">Ideas, made visible</span>
