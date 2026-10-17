@@ -1,0 +1,9 @@
+# Supabase CLI settings for local development and GitHub Actions.
+project_id = "talk-to-us"
+
+[db.migrations]
+enabled = true
+schema_paths = []
+
+[db.seed]
+enabled = false

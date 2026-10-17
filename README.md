@@ -73,6 +73,18 @@ Email delivery remains off until `RESEND_API_KEY` and `RESEND_FROM_EMAIL` are co
 
 The deployment uses the OpenNext Cloudflare adapter with the existing Next.js App Router, including its server-side notification endpoint. Cloudflare Worker runtime environment settings live in the Cloudflare dashboard or secret store; `.env.local` remains local and ignored by Git.
 
+## Automatic deployment from GitHub
+
+The GitHub Actions workflow in `.github/workflows/deploy.yml` runs validation on pull requests to `main`. On every push to `main`, it runs tests, type checks, lint, and a Worker build, then applies pending Supabase migrations and deploys the app to Cloudflare Workers. You can also run it manually from the **Actions** tab on the `main` branch.
+
+Before the first deployment, add these repository secrets under **Settings → Secrets and variables → Actions → Secrets**:
+
+- `CLOUDFLARE_API_TOKEN`: a Cloudflare API token with **Edit Cloudflare Workers** access, scoped to the account hosting Talk To Us. See [Cloudflare's GitHub Actions guide](https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/).
+- `SUPABASE_ACCESS_TOKEN`: a Supabase personal access token. Use project-scoped Database write access if scoped tokens are available for your account. See [Supabase personal access tokens](https://supabase.com/docs/guides/platform/personal-access-tokens).
+- `SUPABASE_DB_PASSWORD`: the database password for the Talk To Us Supabase project.
+
+The repository variables `CLOUDFLARE_ACCOUNT_ID` and `SUPABASE_PROJECT_ID` are already configured. The workflow marks the initial schema migration as applied because the production schema was originally created through the Supabase dashboard; after that, it applies only new migration files from `supabase/migrations/`. Keep future schema changes in migration files so they can be deployed consistently.
+
 ## What is included
 
 - Email and password sign-in with confirmed accounts.
