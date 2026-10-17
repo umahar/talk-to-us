@@ -1,55 +1,85 @@
 # Talk To Us
 
-A private portal where authenticated users can submit ideas and browse other submissions. Administrators can review, discuss, assign, and track ideas through to an outcome.
+Talk To Us gives a team one calm, visible place to share ideas, review them, discuss next steps, and see what changed over time. It includes a working local demo and a Supabase-backed mode for real accounts and shared data.
 
-## Product decisions
+## Run it locally
 
-- Anyone with a verified account can submit ideas. Use simple email and password sign-in with email verification; no enterprise SSO is required.
-- All authenticated users can browse ideas. Show the submitter's name, idea details, status, and public timeline.
-- Keep discussion private to the submitter and administrators. Administrators can see and respond to every idea.
-- Use three access levels: user, admin, and super admin. Admins manage ideas and their workflow. Super admins also manage user roles and application settings.
-- Send email notifications to submitters for admin replies and meaningful status changes. Notify admins when an idea is submitted or the submitter replies. General viewers do not receive notifications.
-- No external app integrations are planned for the first release.
+Use Node.js 24 or newer and npm.
 
-## Suggested idea workflow
+```bash
+npm install
+npm run dev
+```
 
-1. Submitted
-2. Under consideration
-3. In review
-4. Budget review, when the idea requires funding
-5. Approved / budgeted
-6. Assigned
-7. In progress
-8. Resolved
-9. Closed
+Open [http://localhost:3000](http://localhost:3000). With no Supabase environment values, the development app starts in demo mode. Choose a member, admin, or super admin account on the sign-in screen. Demo edits persist in the current browser. Demo uploads save file names and metadata so the flow can be explored; the files themselves are uploaded after Supabase is connected.
 
-Declined, deferred, and duplicate are alternate outcomes that admins can select from an active stage. Ideas that need no budget can skip Budget review. Preserve every status change, its author, timestamp, and an optional decision note.
+To use shared accounts and data, copy `.env.example` to `.env.local` and follow **Connect Supabase** below. Never commit `.env.local` or server API keys.
 
-For useful finance reporting, allow optional estimated cost, currency, budget period, approved amount, and actual spend fields. Budget figures should remain optional so non-financial ideas can use the same workflow.
+## Stack
 
-## Recommended starting stack
+- **Next.js App Router, React, and TypeScript** keep the member portal, admin screens, and notification endpoint in one app.
+- **Supabase Postgres, Auth, and Storage** provide managed accounts, shared records, and private file access with database row level security.
+- **Tailwind CSS 4, React, and Lucide** support the responsive interface and its custom component design.
+- **Resend** handles optional transactional email. It is only called by the server after the database confirms who should receive an update.
 
-- **Next.js App Router and TypeScript** for the user portal, administrator dashboard, forms, and server-side operations in one application.
-- **Supabase Postgres** for users, ideas, assignments, comments, status history, and audit records.
-- **Supabase Auth** for email and password sign-in with verified email addresses. User self-registration is enabled; super admins assign admin roles.
-- **Supabase Storage** with private access policies for uploaded files. Suggested initial limit: up to five files per idea, 10 MB each, allowing PDF, DOCX, XLSX, CSV, PNG, and JPEG. Files are visible only to the submitter and admins.
-- **Tailwind CSS and shadcn/ui** for a consistent, accessible interface. Start with a filterable admin table and status board; add charts for reporting.
-- **Server-side authorization and database Row Level Security** for access checks. Check a user's role and idea access on every protected operation.
+This keeps the starting system small: one app and one managed data service, with email delivery added only when its credentials are configured.
 
-No additional third-party API is required for the first release beyond the chosen authentication, database, and file-storage services. Email delivery can use the provider selected during implementation.
+## Connect Supabase
 
-## Reporting
+1. Create a Supabase project and set its site URL and allowed redirect URL to your app address. For local work, use `http://localhost:3000`.
+2. In Supabase Authentication, enable email and password sign-in and email confirmation. Self-registration is on; confirmed members start with the `user` role.
+3. Run [`supabase/migrations/20261017000000_initial_schema.sql`](supabase/migrations/20261017000000_initial_schema.sql) in the Supabase SQL Editor. It creates the schema, access rules, starter categories, and private file bucket.
+4. Copy `.env.example` to `.env.local`, then add the project URL and publishable key from **Project settings → API**.
+5. Start the app again with `npm run dev`, sign up with the first administrator email, and confirm the email. In the Supabase SQL Editor, promote that account:
 
-The first dashboard should cover:
+   ```sql
+   update public.profiles
+   set role = 'super_admin'
+   where id = (
+     select id from auth.users
+     where lower(email) = lower('admin@example.com')
+   );
+   ```
 
-- Idea counts by status, category, and month.
-- Ideas awaiting review and their age.
-- Average time to first review and resolution.
-- Budget requested, budget approved, and actual spend by budget period.
-- Filters for date range, category, status, submitter, and assignee.
+6. The first super admin can promote other members to admin or super admin in **Access & settings**.
 
-Categories and budget periods should be manageable by super admins. Use one configured default currency and save the currency alongside each amount so reports do not add unlike currencies together.
+The migration uses database row level security as the access boundary. The browser only receives the Supabase publishable key. The service role key is not needed by this app.
 
-## Later deployment choice
+## Email notifications
 
-Deployment is intentionally undecided. The hosting provider should be selected after confirming the client's identity, data-location, and operational requirements.
+Notifications are sent for new ideas, submitter replies, admin replies, and admin status changes. The server checks the signed-in user's access and the source history/comment record before choosing recipients. Admins receive new ideas and submitter replies; the submitter receives admin replies and status changes. Other board viewers are not emailed.
+
+To enable delivery, create a Resend API key and verify a sender domain, then set these server environment values in `.env.local`:
+
+```env
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=Talk To Us <ideas@example.com>
+```
+
+If they are absent, idea submission and discussion still work; email delivery stays disabled. The endpoint records delivery attempts and uses an idempotency key to avoid duplicate messages.
+
+## What is included
+
+- Email and password sign-in with confirmed accounts.
+- Three roles: member, admin, and super admin.
+- Idea submission, optional budget estimate, and private supporting uploads.
+- A shared idea board with search, category/status filters, and visible submitter names.
+- A private discussion between each idea's submitter and the admin team.
+- A timestamped history of submissions, status changes, assignments, budget changes, and replies.
+- Admin review controls for status, assignee, estimate, approved amount, and actual spend.
+- Reporting for status, category, monthly submissions, review time, resolution time, budget, and CSV export.
+- Super admin tools for access and category management.
+- Private Supabase Storage files: up to five per idea, 10 MB each; PDF, DOCX, XLSX, CSV, PNG, and JPEG.
+
+Reports keep totals grouped by currency and budget period. The default currency is GBP and can be changed with `NEXT_PUBLIC_DEFAULT_CURRENCY`.
+
+## Checks
+
+```bash
+npm run test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+The SQL migration should be applied to a Supabase project before using the live backend. Deployment is intentionally out of scope for this project setup.
